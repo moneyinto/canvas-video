@@ -46,6 +46,15 @@ export default class Video {
             "mousedown",
             throttleRAF(this._mousedown.bind(this))
         );
+
+        window.addEventListener("blur", () => {
+            if (this._draw.playBtnActive || this._draw.progressActive) {
+                this._canvas.style.cursor = "default";
+                this._draw.playBtnActive = false;
+                this._draw.progressActive = false;
+                this._draw.render();
+            }
+        });
     }
 
     private _createCanvas() {

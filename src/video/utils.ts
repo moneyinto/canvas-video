@@ -40,3 +40,11 @@ export const throttleRAF = <T extends unknown[]>(fn: (...args: T) => void) => {
     };
     return ret;
 };
+
+export const fomatTime = (time: number) => {
+    const h = Math.floor(time / 3600);
+    const m = Math.floor((time - h * 3600) / 60);
+    const s = Math.floor(time - h * 3600 - m * 60);
+    const hStr = `${h.toString().padStart(2, "0")}`;
+    return `${hStr === "00" ? "" : (hStr + ":")}${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+};

@@ -47,14 +47,9 @@ export default class Video {
             throttleRAF(this._mousedown.bind(this))
         );
 
-        window.addEventListener("blur", () => {
-            if (this._draw.playBtnActive || this._draw.progressActive) {
-                this._canvas.style.cursor = "default";
-                this._draw.playBtnActive = false;
-                this._draw.progressActive = false;
-                this._draw.render();
-            }
-        });
+        window.addEventListener("mouseout", this._leaveRender.bind(this));
+
+        window.addEventListener("blur", this._leaveRender.bind(this));
     }
 
     private _createCanvas() {
@@ -119,6 +114,15 @@ export default class Video {
         }
     }
 
+    private _leaveRender() {
+        if (this._draw.playBtnActive || this._draw.progressActive) {
+            this._canvas.style.cursor = "default";
+            this._draw.playBtnActive = false;
+            this._draw.progressActive = false;
+            this._draw.render();
+        }
+    }
+
     private _mousemove(event: MouseEvent) {
         // console.log(event.offsetX, event.offsetY);
         const mouseX = event.offsetX;
@@ -149,12 +153,7 @@ export default class Video {
                 this._draw.render();
             }
         } else {
-            if (this._draw.playBtnActive || this._draw.progressActive) {
-                this._canvas.style.cursor = "default";
-                this._draw.playBtnActive = false;
-                this._draw.progressActive = false;
-                this._draw.render();
-            }
+            this._leaveRender();
         }
     }
 

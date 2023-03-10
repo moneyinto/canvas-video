@@ -17,6 +17,7 @@ export default class Draw {
     public playBtnActive = false;
     public progressActive = false;
     public progress = 0;
+    public loadProgress = 0;
 
     private _autoRender: boolean = false;
     constructor(
@@ -170,6 +171,13 @@ export default class Draw {
             this._ctx.arc(this.progressWidth * this.progress, 0, 5, 0, 360);
             this._ctx.fill();
         }
+
+        // 缓存进度条
+        this._ctx.globalAlpha = 0.5;
+        this._ctx.beginPath();
+        this._ctx.moveTo(0, 0);
+        this._ctx.lineTo(this.progressWidth * this.loadProgress, 0);
+        this._ctx.stroke();
 
         // 播放进度条
         this._ctx.globalAlpha = 1;

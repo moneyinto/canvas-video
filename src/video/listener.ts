@@ -23,6 +23,9 @@ export default class Listener {
 
         this._video.addEventListener("timeupdate", () => {
             this._draw.progress = this._video.currentTime / this._video.duration;
+            if (this._video.buffered.length > 0) {
+                this._draw.loadProgress = this._video.buffered.end(0) / this._video.duration;
+            }
         });
     }
 

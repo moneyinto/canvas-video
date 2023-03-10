@@ -18,6 +18,7 @@ export default class Video {
     public oncanplay: Function | null;
 
     private _updateDebounce: null | number;
+    private _interval = 0;
     constructor(container: HTMLDivElement, width?: number, height?: number) {
         this._container = container;
 
@@ -83,8 +84,8 @@ export default class Video {
 
     private _initVideo() {
         const video = document.createElement("video");
-        video.muted = true;
-        // this._video.controls = true;
+        // video.muted = true;
+        // video.controls = true;
         video.style.visibility = "hidden";
         video.style.position = "absolute";
         video.style.zIndex = "-1000";

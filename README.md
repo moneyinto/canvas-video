@@ -9,6 +9,10 @@
 - 点击进度条更新当前视频帧
 
 ### 使用
+```shell
+npm install m-canvas-video
+```
+
 ```html
 <div class="canvas-video" id="video"></div>
 ```

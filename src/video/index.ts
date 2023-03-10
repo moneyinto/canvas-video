@@ -1,31 +1,40 @@
-import { throttleRAF } from "./utils";
+import Draw from "./draw";
+import Listener from "./listener";
+import { IEvent, IListener } from "./type";
 
 export default class Video {
     private _container: HTMLDivElement;
-    private _video: HTMLVideoElement | null;
+    private _video: HTMLVideoElement;
 
     private _canvas: HTMLCanvasElement;
     private _ctx: CanvasRenderingContext2D;
+    private _draw: Draw;
+    private _listener: Listener;
 
-    private _src: string; // 视频播放链接
     private _width: number;
     private _height: number;
+
+    public oncanplay: Function | null;
 
     private _updateDebounce: null | number;
     constructor(container: HTMLDivElement, width?: number, height?: number) {
         this._container = container;
-        this._video = null;
 
         this._updateDebounce = null;
 
-        this._src = "";
         this._width = width || 320;
         this._height = height || 200;
+
+        this.oncanplay = null;
 
         const { canvas, ctx } = this._createCanvas();
 
         this._canvas = canvas;
         this._ctx = ctx;
+
+        this._video = this._initVideo();
+        this._draw = new Draw(this._canvas, this._ctx, this._video);
+        this._listener = new Listener(this._video, this._draw);
     }
 
     private _createCanvas() {
@@ -45,7 +54,6 @@ export default class Video {
     }
 
     private _resetCanvas() {
-        console.log("重置 canvas", this._canvas);
         this._canvas.style.width = `${this._width}px`;
         this._canvas.style.height = `${this._height}px`;
 
@@ -53,16 +61,43 @@ export default class Video {
         this._canvas.width = this._width * dpr;
         this._canvas.height = this._height * dpr;
         this._ctx.scale(dpr, dpr);
+
+        this._draw.init();
+        this._draw.render();
     }
 
     private _initVideo() {
-        this._video = document.createElement("video");
-        this._video.style.display = "none";
-        this._video.oncanplay = () => {
-            console.log("xxxxxx");
+        const video = document.createElement("video");
+        video.muted = true;
+        // this._video.controls = true;
+        // video.style.visibility = "hidden";
+        video.style.position = "absolute";
+        // video.style.zIndex = "-1000";
+        // this._video.style.left = "-10000px";
+        video.oncanplay = () => {
+            console.log("x=x==x=x=x canplay");
+            this._draw.init();
+            this._draw.render();
+            this.oncanplay && this.oncanplay();
         };
-        this._video.src = this._src;
-        // document.body.appendChild(this._video);
+        document.body.appendChild(video);
+        return video;
+    }
+
+    play() {
+        this._video.play();
+    }
+
+    pause() {
+        this._video.pause();
+    }
+
+    addEventListener(event: IEvent, listener: IListener) {
+        this._listener.add(event, listener);
+    }
+
+    removeEventListener(event: IEvent, listener: IListener) {
+        this._listener.remove(event, listener);
     }
 
     get width() {
@@ -84,12 +119,15 @@ export default class Video {
     }
 
     get src() {
-        return this._src;
+        return this._video.src;
     }
 
     set src(src: string) {
-        this._src = src;
-        this._initVideo();
+        this._video.src = src;
+    }
+
+    get paused() {
+        return this._video.paused;
     }
 
     private _debounce(callback: () => void) {

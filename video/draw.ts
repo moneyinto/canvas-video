@@ -66,6 +66,8 @@ export default class Draw {
     public render() {
         if (this._video) {
             this.clear();
+            this._ctx.fillStyle = "#000000";
+            this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
             this._ctx.drawImage(
                 this._video,
                 this._x,

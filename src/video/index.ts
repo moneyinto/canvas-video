@@ -111,8 +111,8 @@ export default class Video {
         const mouseY = event.offsetY;
 
         if (
-            mouseX >= 20 &&
-            mouseX < 31 &&
+            mouseX >= 30 &&
+            mouseX < 41 &&
             mouseY >= this._canvas.height - 30 &&
             mouseY <= this._canvas.height - 30 + 12
         ) {

@@ -8,7 +8,10 @@ export default class Draw {
     private _width: number = 0;
     private _height: number = 0;
 
+    private _progressWidth = 0;
+
     public playBtnActive = false;
+    public progress = 0;
 
     private _autoRender: boolean = false;
     constructor(
@@ -40,6 +43,8 @@ export default class Draw {
             this._x = (cavnasWidth - this._width) / 2;
             this._y = 0;
         }
+
+        this._progressWidth = this._canvas.width - 40;
     }
 
     set autoRender(autoRender: boolean) {
@@ -64,6 +69,7 @@ export default class Draw {
             this.renderControlBg();
             this.renderPlayBtn();
             this.renderPauseBtn();
+            this.renderProgress();
         }
     }
 
@@ -106,7 +112,7 @@ export default class Draw {
     public renderPlayBtn() {
         if (!this._video.paused) return;
         this._ctx.save();
-        this._ctx.translate(20, this._canvas.height - 30);
+        this._ctx.translate(30, this._canvas.height - 30);
         this._ctx.globalAlpha = this.playBtnActive ? 1 : 0.8;
         this._ctx.lineCap = "round";
         this._ctx.lineWidth = 2;
@@ -123,7 +129,7 @@ export default class Draw {
     public renderPauseBtn() {
         if (this._video.paused) return;
         this._ctx.save();
-        this._ctx.translate(20, this._canvas.height - 30);
+        this._ctx.translate(30, this._canvas.height - 30);
         this._ctx.globalAlpha = this.playBtnActive ? 1 : 0.8;
         this._ctx.lineCap = "round";
         this._ctx.lineWidth = 2;
@@ -134,6 +140,27 @@ export default class Draw {
         this._ctx.moveTo(10, 0);
         this._ctx.lineTo(10, 12);
         this._ctx.stroke();
+        this._ctx.restore();
+    }
+
+    public renderProgress() {
+        this._ctx.save();
+        this._ctx.translate(20, this._canvas.height - 45);
+        this._ctx.globalAlpha = 0.5;
+        this._ctx.lineCap = "round";
+        this._ctx.lineWidth = 4;
+        this._ctx.strokeStyle = "#ffffff";
+        this._ctx.beginPath();
+        this._ctx.moveTo(0, 0);
+        this._ctx.lineTo(this._progressWidth, 0);
+        this._ctx.stroke();
+
+        this._ctx.globalAlpha = 1;
+        this._ctx.beginPath();
+        this._ctx.moveTo(0, 0);
+        this._ctx.lineTo(this._progressWidth * this.progress, 0);
+        this._ctx.stroke();
+
         this._ctx.restore();
     }
 }

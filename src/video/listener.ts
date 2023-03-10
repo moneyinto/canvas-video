@@ -20,6 +20,10 @@ export default class Listener {
             this._draw.stopRender();
             this._draw.render();
         });
+
+        this._video.addEventListener("timeupdate", () => {
+            this._draw.progress = this._video.currentTime / this._video.duration;
+        });
     }
 
     add(event: IEvent, listener: IListener) {

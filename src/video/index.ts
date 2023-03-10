@@ -104,8 +104,13 @@ export default class Video {
 
     private _mousedown(event: MouseEvent) {
         const mouseX = event.offsetX;
-        // const mouseY = event.offsetY;
-        if (this._draw.playBtnActive) {
+        const mouseY = event.offsetY;
+        const isOutControl =
+            mouseX >= 0 &&
+            mouseY >= 0 &&
+            mouseX <= this._canvas.width &&
+            mouseY <= this._canvas.height - 60;
+        if (this._draw.playBtnActive || isOutControl) {
             // 播放 暂停
             this._video.paused ? this.play() : this.pause();
             this._draw.render();

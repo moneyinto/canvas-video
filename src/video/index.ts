@@ -1,6 +1,7 @@
 import Draw from "./draw";
 import Listener from "./listener";
 import { IEvent, IListener } from "./type";
+import { throttleRAF } from "./utils";
 
 export default class Video {
     private _container: HTMLDivElement;
@@ -35,6 +36,16 @@ export default class Video {
         this._video = this._initVideo();
         this._draw = new Draw(this._canvas, this._ctx, this._video);
         this._listener = new Listener(this._video, this._draw);
+
+        this._canvas.addEventListener(
+            "mousemove",
+            throttleRAF(this._mousemove.bind(this))
+        );
+
+        this._canvas.addEventListener(
+            "mousedown",
+            throttleRAF(this._mousedown.bind(this))
+        );
     }
 
     private _createCanvas() {
@@ -74,14 +85,50 @@ export default class Video {
         video.style.position = "absolute";
         // video.style.zIndex = "-1000";
         // this._video.style.left = "-10000px";
-        video.oncanplay = () => {
-            console.log("x=x==x=x=x canplay");
-            this._draw.init();
-            this._draw.render();
-            this.oncanplay && this.oncanplay();
-        };
         document.body.appendChild(video);
+        video.oncanplay = () => {
+            // 延迟一段时间
+            setTimeout(() => {
+                this._draw.init();
+                this._draw.render();
+                this.oncanplay && this.oncanplay();
+            }, 100);
+        };
         return video;
+    }
+
+    private _mousedown() {
+        if (this._draw.playBtnActive) {
+            // 播放 暂停
+            this._video.paused ? this.play() : this.pause();
+            this._draw.render();
+        }
+    }
+
+    private _mousemove(event: MouseEvent) {
+        // console.log(event.offsetX, event.offsetY);
+        const mouseX = event.offsetX;
+        const mouseY = event.offsetY;
+
+        if (
+            mouseX >= 20 &&
+            mouseX < 31 &&
+            mouseY >= this._canvas.height - 30 &&
+            mouseY <= this._canvas.height - 30 + 12
+        ) {
+            if (!this._draw.playBtnActive) {
+                // 播放 暂停按钮区域
+                this._canvas.style.cursor = "pointer";
+                this._draw.playBtnActive = true;
+                this._draw.render();
+            }
+        } else {
+            if (this._draw.playBtnActive) {
+                this._canvas.style.cursor = "default";
+                this._draw.playBtnActive = false;
+                this._draw.render();
+            }
+        }
     }
 
     play() {

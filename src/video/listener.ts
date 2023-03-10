@@ -9,11 +9,16 @@ export default class Listener {
         this._draw = draw;
 
         this._video.addEventListener("play", () => {
-            this._draw?.startRender();
+            this._draw.startRender();
         });
 
         this._video.addEventListener("pause", () => {
-            this._draw?.stopRender();
+            this._draw.stopRender();
+        });
+
+        this._video.addEventListener("ended", () => {
+            this._draw.stopRender();
+            this._draw.render();
         });
     }
 

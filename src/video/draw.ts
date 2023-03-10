@@ -8,8 +8,14 @@ export default class Draw {
     private _width: number = 0;
     private _height: number = 0;
 
+    public playBtnActive = false;
+
     private _autoRender: boolean = false;
-    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, video: HTMLVideoElement) {
+    constructor(
+        canvas: HTMLCanvasElement,
+        ctx: CanvasRenderingContext2D,
+        video: HTMLVideoElement
+    ) {
         this._canvas = canvas;
         this._ctx = ctx;
         this._video = video;
@@ -46,8 +52,18 @@ export default class Draw {
 
     public render() {
         if (this._video) {
-            this.clear();   
-            this._ctx.drawImage(this._video, this._x, this._y, this._width, this._height);
+            this.clear();
+            this._ctx.drawImage(
+                this._video,
+                this._x,
+                this._y,
+                this._width,
+                this._height
+            );
+
+            this.renderControlBg();
+            this.renderPlayBtn();
+            this.renderPauseBtn();
         }
     }
 
@@ -63,5 +79,61 @@ export default class Draw {
 
     public stopRender() {
         this._autoRender = false;
+    }
+
+    // 回执控制栏背景
+    public renderControlBg() {
+        this._ctx.save();
+        const height = 80;
+        const lineargradient = this._ctx.createLinearGradient(
+            this._canvas.width / 2,
+            this._canvas.height,
+            this._canvas.width / 2,
+            this._canvas.height - height
+        );
+        lineargradient.addColorStop(0, "#000000b0");
+        lineargradient.addColorStop(1, "#00000000");
+        this._ctx.fillStyle = lineargradient;
+        this._ctx.fillRect(
+            0,
+            this._canvas.height - height,
+            this._canvas.width,
+            height
+        );
+        this._ctx.restore();
+    }
+
+    public renderPlayBtn() {
+        if (!this._video.paused) return;
+        this._ctx.save();
+        this._ctx.translate(20, this._canvas.height - 30);
+        this._ctx.globalAlpha = this.playBtnActive ? 1 : 0.8;
+        this._ctx.lineCap = "round";
+        this._ctx.lineWidth = 2;
+        this._ctx.strokeStyle = "#ffffff";
+        this._ctx.beginPath();
+        this._ctx.moveTo(0, 0);
+        this._ctx.lineTo(0, 12);
+        this._ctx.lineTo(10.392, 6);
+        this._ctx.closePath();
+        this._ctx.stroke();
+        this._ctx.restore();
+    }
+
+    public renderPauseBtn() {
+        if (this._video.paused) return;
+        this._ctx.save();
+        this._ctx.translate(20, this._canvas.height - 30);
+        this._ctx.globalAlpha = this.playBtnActive ? 1 : 0.8;
+        this._ctx.lineCap = "round";
+        this._ctx.lineWidth = 2;
+        this._ctx.strokeStyle = "#ffffff";
+        this._ctx.beginPath();
+        this._ctx.moveTo(2, 0);
+        this._ctx.lineTo(2, 12);
+        this._ctx.moveTo(10, 0);
+        this._ctx.lineTo(10, 12);
+        this._ctx.stroke();
+        this._ctx.restore();
     }
 }

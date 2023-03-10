@@ -9,9 +9,9 @@ window.onload = () => {
         //     video.play();
         // };
 
-        video.addEventListener("canplay", () => {
-            video.play();
-        });
+        // video.addEventListener("canplay", () => {
+        //     video.play();
+        // });
 
         video.src = "/video.mp4";
     }

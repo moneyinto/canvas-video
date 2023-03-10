@@ -1,4 +1,4 @@
-import Video from "./video";
+import Video from "../video";
 
 window.onload = () => {
     const container = document.querySelector<HTMLDivElement>("#video");

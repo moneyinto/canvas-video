@@ -17,8 +17,7 @@ export default class Video {
 
     public oncanplay: Function | null;
 
-    private _updateDebounce: null | number;
-    private _interval = 0;
+    private _updateDebounce: any;
     constructor(container: HTMLDivElement, width?: number, height?: number) {
         this._container = container;
 

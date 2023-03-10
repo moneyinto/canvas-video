@@ -79,7 +79,6 @@ export default class Draw {
             this.renderPauseBtn();
             this.renderProgress();
             this.renderTime();
-            console.log("render");
         }
     }
 

@@ -2,8 +2,12 @@
     "name": "canvas_video",
     "version": "1.0.0",
     "description": "canvas视频播放器",
-    "main": "main.ts",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "type": "module",
+    "files": [
+        "build/"
+    ],
     "dependencies": {},
     "devDependencies": {
         "@types/node": "^18.11.10",
@@ -12,7 +16,8 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "tsc --noEmit && vite build"
+        "build": "tsc --noEmit && vite build",
+        "build-bundle": "rm -rf build & tsc"
     },
     "author": "moneyinto",
     "license": "ISC"

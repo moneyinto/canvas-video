@@ -81,9 +81,9 @@ export default class Video {
         const video = document.createElement("video");
         video.muted = true;
         // this._video.controls = true;
-        // video.style.visibility = "hidden";
+        video.style.visibility = "hidden";
         video.style.position = "absolute";
-        // video.style.zIndex = "-1000";
+        video.style.zIndex = "-1000";
         // this._video.style.left = "-10000px";
         document.body.appendChild(video);
         video.oncanplay = () => {
@@ -97,11 +97,16 @@ export default class Video {
         return video;
     }
 
-    private _mousedown() {
+    private _mousedown(event: MouseEvent) {
+        const mouseX = event.offsetX;
+        // const mouseY = event.offsetY;
         if (this._draw.playBtnActive) {
             // 播放 暂停
             this._video.paused ? this.play() : this.pause();
             this._draw.render();
+        } else if (this._draw.progressActive) {
+            const progress = (mouseX - 20) / this._draw.progressWidth;
+            this._video.currentTime = this._video.duration * progress;
         }
     }
 
@@ -122,10 +127,23 @@ export default class Video {
                 this._draw.playBtnActive = true;
                 this._draw.render();
             }
+        } else if (
+            mouseX >= 20 &&
+            mouseX <= this._canvas.width - 20 &&
+            mouseY >= this._canvas.height - 50 &&
+            mouseY <= this._canvas.height - 50 + 8
+        ) {
+            if (!this._draw.progressActive) {
+                // 进度条区域
+                this._canvas.style.cursor = "pointer";
+                this._draw.progressActive = true;
+                this._draw.render();
+            }
         } else {
-            if (this._draw.playBtnActive) {
+            if (this._draw.playBtnActive || this._draw.progressActive) {
                 this._canvas.style.cursor = "default";
                 this._draw.playBtnActive = false;
+                this._draw.progressActive = false;
                 this._draw.render();
             }
         }

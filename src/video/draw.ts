@@ -10,11 +10,12 @@ export default class Draw {
     private _width: number = 0;
     private _height: number = 0;
 
-    private _progressWidth = 320 - 40;
+    public progressWidth = 320 - 40;
     private _controlX = 20;
     private _controlY = 200 - 80;
 
     public playBtnActive = false;
+    public progressActive = false;
     public progress = 0;
 
     private _autoRender: boolean = false;
@@ -48,7 +49,7 @@ export default class Draw {
             this._y = 0;
         }
 
-        this._progressWidth = this._canvas.width - 40;
+        this.progressWidth = this._canvas.width - 40;
         this._controlX = 20;
         this._controlY = this._canvas.height - 80;
     }
@@ -153,19 +154,28 @@ export default class Draw {
     public renderProgress() {
         this._ctx.save();
         this._ctx.translate(this._controlX, this._controlY + 35);
-        this._ctx.globalAlpha = 0.5;
+        this._ctx.globalAlpha = 0.3;
         this._ctx.lineCap = "round";
         this._ctx.lineWidth = 4;
         this._ctx.strokeStyle = "#ffffff";
         this._ctx.beginPath();
         this._ctx.moveTo(0, 0);
-        this._ctx.lineTo(this._progressWidth, 0);
+        this._ctx.lineTo(this.progressWidth, 0);
         this._ctx.stroke();
 
+        if (this.progressActive) {
+            this._ctx.fillStyle = "#ffffff";
+            this._ctx.globalAlpha = 1;
+            this._ctx.beginPath();
+            this._ctx.arc(this.progressWidth * this.progress, 0, 5, 0, 360);
+            this._ctx.fill();
+        }
+
+        // 播放进度条
         this._ctx.globalAlpha = 1;
         this._ctx.beginPath();
         this._ctx.moveTo(0, 0);
-        this._ctx.lineTo(this._progressWidth * this.progress, 0);
+        this._ctx.lineTo(this.progressWidth * this.progress, 0);
         this._ctx.stroke();
 
         this._ctx.restore();
@@ -179,7 +189,7 @@ export default class Draw {
         this._ctx.font = "12px sans-serif";
         const currentTime = fomatTime(this._video.currentTime);
         const duration = fomatTime(this._video.duration);
-        this._ctx.fillText(`${currentTime}/${duration}`, 40, 11);
+        this._ctx.fillText(`${currentTime} / ${duration}`, 40, 11);
 
         this._ctx.restore();
     }

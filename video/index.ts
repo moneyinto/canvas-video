@@ -1,7 +1,7 @@
 import Draw from "./draw";
 import Listener from "./listener";
 import { IEvent, IListener } from "./type";
-import { throttleRAF } from "./utils";
+import { enterFullScreen, exitFullScreen, isFullScreen, throttleRAF } from "./utils";
 
 export default class Video {
     private _container: HTMLDivElement;
@@ -68,6 +68,8 @@ export default class Video {
         const canvas = document.createElement("canvas");
         canvas.style.width = `${this._width}px`;
         canvas.style.height = `${this._height}px`;
+        canvas.style.zIndex = "100000";
+        canvas.style.transition = "0.3s all";
         this._container.appendChild(canvas);
 
         // 调整分辨率
@@ -80,13 +82,13 @@ export default class Video {
         return { ctx, canvas };
     }
 
-    private _resetCanvas() {
-        this._canvas.style.width = `${this._width}px`;
-        this._canvas.style.height = `${this._height}px`;
+    private _resetCanvas(width: number, height: number) {
+        this._canvas.style.width = `${width}px`;
+        this._canvas.style.height = `${height}px`;
 
         const dpr = window.devicePixelRatio;
-        this._canvas.width = this._width * dpr;
-        this._canvas.height = this._height * dpr;
+        this._canvas.width = width * dpr;
+        this._canvas.height = height * dpr;
         this._ctx.scale(dpr, dpr);
 
         this._draw.init();
@@ -128,12 +130,31 @@ export default class Video {
         } else if (this._draw.progressActive) {
             const progress = (mouseX - 20) / this._draw.progressWidth;
             this._video.currentTime = this._video.duration * progress;
+        } else if (this._draw.fullScreenActive) {
+            if (isFullScreen()) {
+                exitFullScreen();
+                this._canvas.style.position = "relative";
+                setTimeout(() => {
+                    this._resetCanvas(this._width, this._height);
+                }, 300);
+            } else {
+                enterFullScreen();
+                this._canvas.style.position = "absolute";
+                setTimeout(() => {
+                    this._resetCanvas(window.innerWidth, window.innerHeight);
+                }, 300);
+            }
         }
     }
 
     private _leaveRender() {
-        if (this._draw.playBtnActive || this._draw.progressActive) {
+        if (
+            this._draw.playBtnActive ||
+            this._draw.progressActive ||
+            this._draw.fullScreenActive
+        ) {
             this._canvas.style.cursor = "default";
+            this._draw.fullScreenActive = false;
             this._draw.playBtnActive = false;
             this._draw.progressActive = false;
             this._draw.render();
@@ -191,6 +212,18 @@ export default class Video {
                 this._draw.progressActive = true;
                 this._draw.render();
             }
+        } else if (
+            mouseX <= this._canvas.width - 30 &&
+            mouseX >= this._canvas.width - 30 - 12 &&
+            mouseY <= this._canvas.height - 30 + 12 &&
+            mouseY >= this._canvas.height - 30
+        ) {
+            if (!this._draw.fullScreenActive) {
+                // 进全屏区域
+                this._canvas.style.cursor = "pointer";
+                this._draw.fullScreenActive = true;
+                this._draw.render();
+            }
         } else {
             this._leaveRender();
         }
@@ -218,7 +251,7 @@ export default class Video {
 
     set width(width: number) {
         this._width = width;
-        this._debounce(this._resetCanvas.bind(this));
+        this._debounce(this._resetCanvas.bind(this, width, this._height));
     }
 
     get height() {
@@ -227,7 +260,7 @@ export default class Video {
 
     set height(height: number) {
         this._height = height;
-        this._debounce(this._resetCanvas.bind(this));
+        this._debounce(this._resetCanvas.bind(this, this._width, height));
     }
 
     get src() {

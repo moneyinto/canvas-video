@@ -1,4 +1,4 @@
-import { fomatTime } from "./utils";
+import { fomatTime, isFullScreen } from "./utils";
 
 export default class Draw {
     private _canvas: HTMLCanvasElement;
@@ -16,6 +16,7 @@ export default class Draw {
 
     public playBtnActive = false;
     public progressActive = false;
+    public fullScreenActive = false;
     public progress = 0;
     public loadProgress = 0;
 
@@ -86,6 +87,7 @@ export default class Draw {
         this.renderPauseBtn();
         this.renderProgress();
         this.renderTime();
+        this.renderFullScreen();
     }
 
     public startRender() {
@@ -203,6 +205,49 @@ export default class Draw {
         const currentTime = fomatTime(this._video.currentTime);
         const duration = fomatTime(this._video.duration);
         this._ctx.fillText(`${currentTime} / ${duration}`, 40, 11);
+
+        this._ctx.restore();
+    }
+
+    public renderFullScreen() {
+        this._ctx.save();
+        this._ctx.translate(this._canvas.width - this.controlX - 22, this.controlY + 50);
+
+        this._ctx.globalAlpha = this.fullScreenActive ? 1 : 0.8;
+        this._ctx.lineCap = "round";
+        this._ctx.lineWidth = 2;
+        this._ctx.strokeStyle = "#ffffff";
+
+        this._ctx.beginPath();
+        if (isFullScreen()) {
+            this._ctx.moveTo(0, 3);
+            this._ctx.lineTo(3, 3);
+            this._ctx.lineTo(3, 0);
+            this._ctx.moveTo(9, 0);
+            this._ctx.lineTo(9, 3);
+            this._ctx.lineTo(12, 3);
+            this._ctx.moveTo(12, 9);
+            this._ctx.lineTo(9, 9);
+            this._ctx.lineTo(9, 12);
+            this._ctx.moveTo(3, 12);
+            this._ctx.lineTo(3, 9);
+            this._ctx.lineTo(0, 9);
+        } else {
+            this._ctx.moveTo(0, 3);
+            this._ctx.lineTo(0, 0);
+            this._ctx.lineTo(3, 0);
+            this._ctx.moveTo(9, 0);
+            this._ctx.lineTo(12, 0);
+            this._ctx.lineTo(12, 3);
+            this._ctx.moveTo(12, 9);
+            this._ctx.lineTo(12, 12);
+            this._ctx.lineTo(9, 12);
+            this._ctx.moveTo(3, 12);
+            this._ctx.lineTo(0, 12);
+            this._ctx.lineTo(0, 9);
+        }
+
+        this._ctx.stroke();
 
         this._ctx.restore();
     }

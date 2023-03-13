@@ -37,7 +37,7 @@ npm install m-canvas-video
 ```
 
 ```ts
-import Video from "video";
+import Video from "m-canvas-video";
 const container = document.querySelector<HTMLDivElement>("#video");
 if (container) {
     const video = new Video(container, 600, 400);

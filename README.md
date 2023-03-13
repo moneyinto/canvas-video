@@ -1,3 +1,22 @@
+<p align="center">
+    <img style="width: 192px;" src="/public/favicon.png" />
+</p>
+
+<p align="center">
+    <a href="https://github.com/moneyinto/canvas-ppt/stargazers" target="_black">
+        <img src="https://img.shields.io/github/stars/moneyinto/canvas-video?logo=github" alt="stars" />
+    </a>
+    <a href="https://www.github.com/moneyinto/canvas-ppt/network/members" target="_black">
+        <img src="https://img.shields.io/github/forks/moneyinto/canvas-video?logo=github" alt="forks" />
+    </a>
+    <a href="https://www.typescriptlang.org" target="_black">
+        <img src="https://img.shields.io/badge/language-TypeScript-blue.svg" alt="language">
+    </a>
+    <a href="https://github.com/moneyinto/canvas-video/issues" target="_black">
+        <img src="https://img.shields.io/github/issues-closed/moneyinto/canvas-video.svg" alt="issue">
+    </a>
+</p>
+
 ### Canvas 视频播放器
 
 - 绘制视频影像

@@ -11,8 +11,8 @@ export default class Draw {
     private _height: number = 0;
 
     public progressWidth = 320 - 40;
-    private _controlX = 20;
-    private _controlY = 200 - 80;
+    public controlX = 20;
+    public controlY = 200 - 80;
 
     public playBtnActive = false;
     public progressActive = false;
@@ -51,8 +51,8 @@ export default class Draw {
         }
 
         this.progressWidth = this._canvas.width - 40;
-        this._controlX = 20;
-        this._controlY = this._canvas.height - 80;
+        this.controlX = 20;
+        this.controlY = this._canvas.height - 80;
     }
 
     set autoRender(autoRender: boolean) {
@@ -76,12 +76,16 @@ export default class Draw {
                 this._height
             );
 
-            this.renderControlBg();
-            this.renderPlayBtn();
-            this.renderPauseBtn();
-            this.renderProgress();
-            this.renderTime();
+            this._renderControl();
         }
+    }
+
+    private _renderControl() {
+        this.renderControlBg();
+        this.renderPlayBtn();
+        this.renderPauseBtn();
+        this.renderProgress();
+        this.renderTime();
     }
 
     public startRender() {
@@ -105,14 +109,14 @@ export default class Draw {
             this._canvas.width / 2,
             this._canvas.height,
             this._canvas.width / 2,
-            this._controlY
+            this.controlY
         );
         lineargradient.addColorStop(0, "#000000b0");
         lineargradient.addColorStop(1, "#00000000");
         this._ctx.fillStyle = lineargradient;
         this._ctx.fillRect(
             0,
-            this._controlY,
+            this.controlY,
             this._canvas.width,
             80
         );
@@ -122,7 +126,7 @@ export default class Draw {
     public renderPlayBtn() {
         if (!this._video.paused) return;
         this._ctx.save();
-        this._ctx.translate(this._controlX + 10, this._controlY + 50);
+        this._ctx.translate(this.controlX + 10, this.controlY + 50);
         this._ctx.globalAlpha = this.playBtnActive ? 1 : 0.8;
         this._ctx.lineCap = "round";
         this._ctx.lineWidth = 2;
@@ -139,7 +143,7 @@ export default class Draw {
     public renderPauseBtn() {
         if (this._video.paused) return;
         this._ctx.save();
-        this._ctx.translate(this._controlX + 10, this._controlY + 50);
+        this._ctx.translate(this.controlX + 10, this.controlY + 50);
         this._ctx.globalAlpha = this.playBtnActive ? 1 : 0.8;
         this._ctx.lineCap = "round";
         this._ctx.lineWidth = 2;
@@ -155,7 +159,7 @@ export default class Draw {
 
     public renderProgress() {
         this._ctx.save();
-        this._ctx.translate(this._controlX, this._controlY + 35);
+        this._ctx.translate(this.controlX, this.controlY + 35);
         this._ctx.globalAlpha = 0.3;
         this._ctx.lineCap = "round";
         this._ctx.lineWidth = 4;
@@ -192,7 +196,7 @@ export default class Draw {
 
     public renderTime() {
         this._ctx.save();
-        this._ctx.translate(this._controlX, this._controlY + 50);
+        this._ctx.translate(this.controlX, this.controlY + 50);
 
         this._ctx.fillStyle = "#ffffff";
         this._ctx.font = "12px sans-serif";

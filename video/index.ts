@@ -18,6 +18,8 @@ export default class Video {
     public oncanplay: Function | null;
 
     private _updateDebounce: any;
+    private _renderInterval: number = 0;
+    private _renderTimeout: number = 0;
     constructor(container: HTMLDivElement, width?: number, height?: number) {
         this._container = container;
 
@@ -45,6 +47,16 @@ export default class Video {
         this._canvas.addEventListener(
             "mousedown",
             throttleRAF(this._mousedown.bind(this))
+        );
+
+        this._canvas.addEventListener(
+            "mouseenter",
+            throttleRAF(this._mouseenter.bind(this))
+        );
+
+        this._canvas.addEventListener(
+            "mouseleave",
+            throttleRAF(this._mouseleave.bind(this))
         );
 
         window.addEventListener("mouseout", this._leaveRender.bind(this));
@@ -125,6 +137,28 @@ export default class Video {
             this._draw.playBtnActive = false;
             this._draw.progressActive = false;
             this._draw.render();
+        }
+    }
+
+    private _mouseenter() {
+        clearInterval(this._renderInterval);
+        clearTimeout(this._renderTimeout);
+        this._draw.controlY = this._canvas.height - 80;
+        this._draw.render();
+    }
+
+    private _mouseleave() {
+        if (!this._video.paused) {
+            this._renderTimeout = setTimeout(() => {
+                clearInterval(this._renderInterval);
+                this._renderInterval = setInterval(() => {
+                    if (this._draw.controlY < this._canvas.height + 10) {
+                        this._draw.controlY += 3;
+                    } else {
+                        clearInterval(this._renderInterval);
+                    }
+                }, 30);
+            }, 3000);
         }
     }
 

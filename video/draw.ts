@@ -1,4 +1,4 @@
-import { fomatTime, isFullScreen } from "./utils";
+import { fomatTime } from "./utils";
 
 export default class Draw {
     private _canvas: HTMLCanvasElement;
@@ -19,6 +19,8 @@ export default class Draw {
     public fullScreenActive = false;
     public progress = 0;
     public loadProgress = 0;
+
+    public isFullScreen = false;
 
     private _autoRender: boolean = false;
     constructor(
@@ -219,7 +221,7 @@ export default class Draw {
         this._ctx.strokeStyle = "#ffffff";
 
         this._ctx.beginPath();
-        if (isFullScreen()) {
+        if (this.isFullScreen) {
             this._ctx.moveTo(0, 3);
             this._ctx.lineTo(3, 3);
             this._ctx.lineTo(3, 0);

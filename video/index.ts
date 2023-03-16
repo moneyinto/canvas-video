@@ -62,6 +62,18 @@ export default class Video {
         window.addEventListener("mouseout", this._leaveRender.bind(this));
 
         window.addEventListener("blur", this._leaveRender.bind(this));
+
+        window.addEventListener("resize", () => {
+            if (!isFullScreen()) {
+                // 退出全屏
+                this._draw.isFullScreen = false;
+                this._canvas.style.position = "relative";
+                this._debounce(this._resetCanvas.bind(this, this._width, this._height));
+            } else {
+                this._canvas.style.position = "absolute";
+                this._debounce(this._resetCanvas.bind(this, ...(this._draw.isFullScreen ? [window.innerWidth, window.innerHeight] : [this._width, this._height])));
+            }
+        });
     }
 
     private _createCanvas() {
@@ -131,18 +143,16 @@ export default class Video {
             const progress = (mouseX - 20) / this._draw.progressWidth;
             this._video.currentTime = this._video.duration * progress;
         } else if (this._draw.fullScreenActive) {
-            if (isFullScreen()) {
+            if (this._draw.isFullScreen) {
+                this._draw.isFullScreen = false;
                 exitFullScreen();
-                this._canvas.style.position = "relative";
-                setTimeout(() => {
-                    this._resetCanvas(this._width, this._height);
-                }, 300);
             } else {
+                this._draw.isFullScreen = true;
                 enterFullScreen();
-                this._canvas.style.position = "absolute";
-                setTimeout(() => {
-                    this._resetCanvas(window.innerWidth, window.innerHeight);
-                }, 300);
+                if (isFullScreen()) {
+                    this._canvas.style.position = "absolute";
+                    this._debounce(this._resetCanvas.bind(this, window.innerWidth, window.innerHeight));
+                }
             }
         }
     }

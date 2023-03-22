@@ -33,11 +33,21 @@ export default class Draw {
         this._video = video;
     }
 
+    private _canvasWidth() {
+        const dpr = window.devicePixelRatio;
+        return this._canvas.width / dpr;
+    }
+
+    private _canvasHeight() {
+        const dpr = window.devicePixelRatio;
+        return this._canvas.height / dpr;
+    }
+
     public init() {
         const videoWidth = this._video.clientWidth;
         const videoHeight = this._video.clientHeight;
-        const cavnasWidth = this._canvas.width;
-        const canvasHeight = this._canvas.height;
+        const cavnasWidth = this._canvasWidth();
+        const canvasHeight = this._canvasHeight();
 
         const ratio = videoHeight / videoWidth;
         // 宽度作为标准
@@ -53,9 +63,9 @@ export default class Draw {
             this._y = 0;
         }
 
-        this.progressWidth = this._canvas.width - 40;
+        this.progressWidth = this._canvasWidth() - 40;
         this.controlX = 20;
-        this.controlY = this._canvas.height - 80;
+        this.controlY = this._canvasHeight() - 80;
     }
 
     set autoRender(autoRender: boolean) {
@@ -63,14 +73,14 @@ export default class Draw {
     }
 
     public clear() {
-        this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        this._ctx.clearRect(0, 0, this._canvasWidth(), this._canvasHeight());
     }
 
     public render() {
         if (this._video) {
             this.clear();
             this._ctx.fillStyle = "#000000";
-            this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+            this._ctx.fillRect(0, 0, this._canvasWidth(), this._canvasHeight());
             this._ctx.drawImage(
                 this._video,
                 this._x,
@@ -110,9 +120,9 @@ export default class Draw {
     public renderControlBg() {
         this._ctx.save();
         const lineargradient = this._ctx.createLinearGradient(
-            this._canvas.width / 2,
-            this._canvas.height,
-            this._canvas.width / 2,
+            this._canvasWidth() / 2,
+            this._canvasHeight(),
+            this._canvasWidth() / 2,
             this.controlY
         );
         lineargradient.addColorStop(0, "#000000b0");
@@ -121,7 +131,7 @@ export default class Draw {
         this._ctx.fillRect(
             0,
             this.controlY,
-            this._canvas.width,
+            this._canvasWidth(),
             80
         );
         this._ctx.restore();
@@ -213,7 +223,7 @@ export default class Draw {
 
     public renderFullScreen() {
         this._ctx.save();
-        this._ctx.translate(this._canvas.width - this.controlX - 22, this.controlY + 50);
+        this._ctx.translate(this._canvasWidth() - this.controlX - 22, this.controlY + 50);
 
         this._ctx.globalAlpha = this.fullScreenActive ? 1 : 0.8;
         this._ctx.lineCap = "round";

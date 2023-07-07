@@ -133,8 +133,8 @@ export default class Video {
         const isOutControl =
             mouseX >= 0 &&
             mouseY >= 0 &&
-            mouseX <= this._canvas.width &&
-            mouseY <= this._canvas.height - 60;
+            mouseX <= this._width &&
+            mouseY <= this._height - 60;
         if (this._draw.playBtnActive || isOutControl) {
             // 播放 暂停
             this._video.paused ? this.play() : this.pause();
@@ -174,7 +174,7 @@ export default class Video {
     private _mouseenter() {
         clearInterval(this._renderInterval);
         clearTimeout(this._renderTimeout);
-        this._draw.controlY = this._canvas.height - 80;
+        this._draw.controlY = this._height - 80;
         this._draw.render();
     }
 
@@ -183,7 +183,7 @@ export default class Video {
             this._renderTimeout = setTimeout(() => {
                 clearInterval(this._renderInterval);
                 this._renderInterval = setInterval(() => {
-                    if (this._draw.controlY < this._canvas.height + 10) {
+                    if (this._draw.controlY < this._height + 10) {
                         this._draw.controlY += 3;
                     } else {
                         clearInterval(this._renderInterval);
@@ -194,15 +194,13 @@ export default class Video {
     }
 
     private _mousemove(event: MouseEvent) {
-        // console.log(event.offsetX, event.offsetY);
         const mouseX = event.offsetX;
         const mouseY = event.offsetY;
-
         if (
             mouseX >= 30 &&
             mouseX < 41 &&
-            mouseY >= this._canvas.height - 30 &&
-            mouseY <= this._canvas.height - 30 + 12
+            mouseY >= this._height - 30 &&
+            mouseY <= this._height - 30 + 12
         ) {
             if (!this._draw.playBtnActive) {
                 // 播放 暂停按钮区域
@@ -212,9 +210,9 @@ export default class Video {
             }
         } else if (
             mouseX >= 20 &&
-            mouseX <= this._canvas.width - 20 &&
-            mouseY >= this._canvas.height - 50 &&
-            mouseY <= this._canvas.height - 50 + 8
+            mouseX <= this._width - 20 &&
+            mouseY >= this._height - 50 &&
+            mouseY <= this._height - 50 + 8
         ) {
             if (!this._draw.progressActive) {
                 // 进度条区域
@@ -223,10 +221,10 @@ export default class Video {
                 this._draw.render();
             }
         } else if (
-            mouseX <= this._canvas.width - 30 &&
-            mouseX >= this._canvas.width - 30 - 12 &&
-            mouseY <= this._canvas.height - 30 + 12 &&
-            mouseY >= this._canvas.height - 30
+            mouseX <= this._width - 30 &&
+            mouseX >= this._width - 30 - 12 &&
+            mouseY <= this._height - 30 + 12 &&
+            mouseY >= this._height - 30
         ) {
             if (!this._draw.fullScreenActive) {
                 // 进全屏区域

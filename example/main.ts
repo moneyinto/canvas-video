@@ -13,6 +13,6 @@ window.onload = () => {
         //     video.play();
         // });
 
-        video.src = "/video.mp4";
+        video.src = "./video.mp4";
     }
 };
